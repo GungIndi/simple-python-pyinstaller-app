@@ -1,14 +1,11 @@
-node {
-    try {
+node() {
+    withDockerContainer('python:3.12.1-alpine3.19') {
         stage('Build') {
-            // Docker configuration for the Build stage
-            def buildContainer = docker.image('python:3.12.1-alpine3.19').inside {
-                sh 'python -m py_compile sources/add2vals.py sources/calc.py'
-            }
-
-            // Stash the compiled results
+            checkout scm
+            sh 'python -m py_compile sources/add2vals.py sources/calc.py'
             stash name: 'compiled-results', includes: 'sources/*.py*'
         }
+    }
 
         // stage('Test') {
         //     // Docker configuration for the Test stage
@@ -17,8 +14,4 @@ node {
         //     }
         //     junit 'test-reports/results.xml'
         // }
-    } catch (Exception e) {
-        echo "Pipeline failed: ${e.message}"
-        currentBuild.result = 'FAILURE'
-    }
 }
