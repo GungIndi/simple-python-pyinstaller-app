@@ -1,31 +1,26 @@
-pipeline {
-    agent none
-    stages {
+node {
+    try {
         stage('Build') {
-            agent {
-                docker {
-                    image 'python:2-alpine'
-                }
-            }
-            steps {
+            // Docker configuration for the Build stage
+            def buildContainer = docker.image('python:3.12.1-alpine3.19').inside {
                 sh 'python -m py_compile sources/add2vals.py sources/calc.py'
             }
-        }
-        stage('Test') {
-            agent {
-                docker {
-                    image 'qnib/pytest'
-                }
-            }
-            steps {
-                sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
-            }
-            post {
-                always {
-                    junit 'test-reports/results.xml'
-                }
-            }
+
+            // Stash the compiled results
+            stash name: 'compiled-results', includes: 'sources/*.py*'
         }
 
+        stage('Test') {
+            // Docker configuration for the Test stage
+            def testContainer = docker.image('qnib/pytest').inside {
+                sh 'py.test --junit-xml test-reports/results.xml sources/test_calc.py'
+            }
+
+            // Post-test actions
+            junit 'test-reports/results.xml'
+        }
+    } catch (Exception e) {
+        echo "Pipeline failed: ${e.message}"
+        currentBuild.result = 'FAILURE'
     }
 }
