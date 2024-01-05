@@ -6,7 +6,7 @@ node() {
             stash name: 'compiled-results', includes: 'sources/*.py*'
         }
     }
-
+}
         // stage('Test') {
         //     // Docker configuration for the Test stage
         //     def testContainer = docker.image('qnib/pytest').inside {
@@ -14,4 +14,3 @@ node() {
         //     }
         //     junit 'test-reports/results.xml'
         // }
-}
