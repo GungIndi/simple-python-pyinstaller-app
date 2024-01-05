@@ -15,8 +15,6 @@ node {
             def testContainer = docker.image('qnib/pytest').inside {
                 sh 'py.test --junit-xml test-reports/results.xml sources/test_calc.py'
             }
-
-            // Post-test actions
             junit 'test-reports/results.xml'
         }
     } catch (Exception e) {
