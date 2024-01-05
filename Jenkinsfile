@@ -7,6 +7,7 @@ node() {
             stash name: 'compiled-results', includes: 'sources/*.py*'
         }
     }
+    
     // test block
     withDockerContainer('qnib/pytest') {
         stage('Test') {
