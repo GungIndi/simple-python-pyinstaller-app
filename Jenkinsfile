@@ -13,7 +13,7 @@ node {
             junit 'test-reports/results.xml'
         }
     } catch (Exception e) {
-        echo "Pipeline failed: ${e.message}"
+        echo "Pipeline has failed: ${e.message}"
         currentBuild.result = 'FAILURE'
     }
 }
