@@ -1,4 +1,5 @@
 node() {
+    // build block
     withDockerContainer('python:3.12.1-alpine3.19') {
         stage('Build') {
             checkout scm
