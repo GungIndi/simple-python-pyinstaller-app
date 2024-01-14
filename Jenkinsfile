@@ -22,15 +22,22 @@ node() {
         input message: 'Lanjutkan ke tahap Deploy?', ok: 'Lanjutkan'     
         }
     }
-    stage('Deploy'){
-        checkout scm
-        withEnv(['VOLUME = $(pwd)/sources:/src', 'IMAGE = cdrx/pyinstaller-linux:python2']){
-            dir(path: env.BUILD_ID) { 
-                    unstash name: 'compiled-results' 
-                    sh "docker run --rm -v ${VOLUME} ${IMAGE} 'pyinstaller -F add2vals.py'"
-                    archiveArtifacts "${env.BUILD_ID}/sources/dist/add2vals"
-                    sh "docker run --rm -v ${VOLUME} ${IMAGE} 'rm -rf build dist'" 
-                }
+    withDockerContainer('cdrx/pyinstaller-linux:python2') {
+        stage('Test') {
+            checkout scm
+            sh 'pyinstaller --onefile sources/add2vals.py'
+            archiveArtifacts 'dist/add2vals'
         }
     }
+    // stage('Deploy'){
+    //     checkout scm
+    //     withEnv(['VOLUME = $(pwd)/sources:/src', 'IMAGE = cdrx/pyinstaller-linux:python2']){
+    //         dir(path: env.BUILD_ID) { 
+    //                 unstash name: 'compiled-results' 
+    //                 sh "docker run --rm -v ${VOLUME} ${IMAGE} 'pyinstaller -F add2vals.py'"
+    //                 archiveArtifacts "${env.BUILD_ID}/sources/dist/add2vals"
+    //                 sh "docker run --rm -v ${VOLUME} ${IMAGE} 'rm -rf build dist'" 
+    //             }
+    //     }
+    // }
 }
