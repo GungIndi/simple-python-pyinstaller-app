@@ -7,7 +7,6 @@ node() {
             stash name: 'compiled-results', includes: 'sources/*.py*'
         }
     }
-    
     // test block
     withDockerContainer('qnib/pytest') {
         stage('Test') {
@@ -16,4 +15,21 @@ node() {
             junit 'test-reports/results.xml'
         }
     }
+    withDockerContainer('python:3.12.1-alpine3.19') {
+        stage('Manual Approval')  {         
+        checkout scm         
+        // Menunggu input persetujuan dari pengguna         
+        input message: 'Lanjutkan ke tahap Deploy?', ok: 'Lanjutkan'     
+        }
+    }
+    stage('Deploy'){
+        checkout scm
+        withEnv(['VOLUME = $(pwd)/sources:/src', 'IMAGE = cdrx/pyinstaller-linux:python2'])
+            dir(path: env.BUILD_ID) { 
+                    unstash name: 'compiled-results' 
+                    sh "docker run --rm -v ${VOLUME} ${IMAGE} 'pyinstaller -F add2vals.py'"
+                    archiveArtifacts "${env.BUILD_ID}/sources/dist/add2vals"
+                    sh "docker run --rm -v ${VOLUME} ${IMAGE} 'rm -rf build dist'" 
+                }
+        }
 }
