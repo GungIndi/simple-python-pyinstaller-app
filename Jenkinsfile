@@ -26,7 +26,6 @@ node() {
         withEnv([
             'VOLUME=$(pwd)/sources:/src',
             'IMAGE=cdrx/pyinstaller-linux:python2',
-            'VERCEL_SCOPE=gungindi',
             'WORK_DIR=sources/dist/'
         ]) {
             dir(path: env.BUILD_ID) {
@@ -37,9 +36,10 @@ node() {
                     sh "sudo chmod -R -u+rwx \$(pwd)/sources/dist/"
                     sh "sudo chown -R jenkins:jenkins \$(pwd)/sources/dist/"
                     sh 'vercel --version'
-                    sh 'vercel --scope ${VERCEL_SCOPE} --cwd ${WORK_DIR} --no-color --token ${VERCEL_TOKEN} pull --yes'
-                    sh 'vercel --scope ${VERCEL_SCOPE} --cwd ${WORK_DIR} --no-color --token ${VERCEL_TOKEN} build --prod --yes'
-                    sh 'vercel --scope ${VERCEL_SCOPE} --cwd ${WORK_DIR} --no-color --token ${VERCEL_TOKEN} deploy --prebuilt --prod'
+                    env.VERCEL_TOKEN = VERCEL_TOKEN
+                    sh 'vercel --cwd ${WORK_DIR} --no-color --token ${VERCEL_TOKEN} pull --yes'
+                    sh 'vercel --cwd ${WORK_DIR} --no-color --token ${VERCEL_TOKEN} build --prod --yes'
+                    sh 'vercel --cwd ${WORK_DIR} --no-color --token ${VERCEL_TOKEN} deploy --prebuilt --prod'
                     sleep time: 60
                     cleanWs()
                 }
