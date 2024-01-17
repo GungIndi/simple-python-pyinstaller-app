@@ -36,7 +36,7 @@ node() {
                     sh "vercel --scope ${VERCEL_SCOPE} --cwd ${WORK_DIR} --no-color --token ${VERCEL_TOKEN} deploy --prebuilt --prod"
                     sleep time: 60
                     cleanWs()   
-                }
+            }
         }
     }
 }
