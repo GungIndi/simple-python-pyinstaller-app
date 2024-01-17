@@ -27,7 +27,7 @@ node() {
             'VOLUME=$(pwd)/sources:/src',
             'IMAGE=cdrx/pyinstaller-linux:python2',
             'VERCEL_SCOPE=gungindi',
-            'WORK_DIR=sources/dist/add2vals'
+            'WORK_DIR=sources/dist/'
         ]) {
             dir(path: env.BUILD_ID) {
                 withCredentials([string(credentialsId: 'vercel-token', variable: 'VERCEL_TOKEN')]) {
