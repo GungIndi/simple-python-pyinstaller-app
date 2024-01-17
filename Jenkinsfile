@@ -22,14 +22,6 @@ node() {
         input message: 'Lanjutkan ke tahap Deploy?', ok: 'Lanjutkan'     
         }
     }
-    // withDockerContainer('cdrx/pyinstaller-linux:python2') {
-    //     stage('Deploy') {
-    //         checkout scm
-    //         sh 'pyinstaller --onefile sources/add2vals.py'
-    //         archiveArtifacts 'dist/add2vals'
-    //         sleep time: 60
-    //     }
-    // }
     stage('Deliver'){
         checkout scm
         withEnv(['VOLUME=$(pwd)/sources:/src', 'IMAGEcdrx/pyinstaller-linux:python2']){
