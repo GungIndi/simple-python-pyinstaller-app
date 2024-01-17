@@ -22,10 +22,16 @@ node() {
             input message: 'Lanjutkan ke tahap Deploy?', ok: 'gasss'     
         }
     }
-    stage('Deliver'){
-        withEnv(['VOLUME=$(pwd)/sources:/src', 'IMAGE=cdrx/pyinstaller-linux:python2', 'VERCEL_SCOPE=gungindi', 'VERCEL_TOKEN=credentials("vercel-token")', 'WORK_DIR=sources/dist/add2vals']){
-            dir(path: env.BUILD_ID) { 
-                    unstash name: 'compiled-results' 
+    stage('Deliver') {
+        withEnv([
+            'VOLUME=$(pwd)/sources:/src',
+            'IMAGE=cdrx/pyinstaller-linux:python2',
+            'VERCEL_SCOPE=gungindi',
+            'WORK_DIR=sources/dist/add2vals'
+        ]) {
+            dir(path: env.BUILD_ID) {
+                withCredentials([string(credentialsId: 'vercel-token', variable: 'VERCEL_TOKEN')]) {
+                    unstash name: 'compiled-results'
                     sh "docker run --rm -v ${VOLUME} ${IMAGE} 'pyinstaller -F add2vals.py'"
                     archiveArtifacts "sources/dist/add2vals"
                     sh "sudo chmod -R -u+rwx \$(pwd)/sources/dist/"
@@ -35,7 +41,8 @@ node() {
                     sh "vercel --scope ${VERCEL_SCOPE} --cwd ${WORK_DIR} --no-color --token ${VERCEL_TOKEN} build --prod --yes"
                     sh "vercel --scope ${VERCEL_SCOPE} --cwd ${WORK_DIR} --no-color --token ${VERCEL_TOKEN} deploy --prebuilt --prod"
                     sleep time: 60
-                    cleanWs()   
+                    cleanWs()
+                }
             }
         }
     }
