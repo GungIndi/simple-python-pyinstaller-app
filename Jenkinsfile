@@ -28,6 +28,7 @@ node() {
                     unstash name: 'compiled-results' 
                     sh "docker run --rm -v ${VOLUME} ${IMAGE} 'pyinstaller -F add2vals.py'"
                     archiveArtifacts "sources/dist/add2vals"
+                    sh 'apt install sudo'
                     sh "sudo chmod -R -u+rwx \$(pwd)/sources/dist/"
                     sh "sudo chown -R jenkins:jenkins \$(pwd)/sources/dist/"
                     sh 'vercel --version'
