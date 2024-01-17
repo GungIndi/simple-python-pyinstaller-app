@@ -18,7 +18,7 @@ node() {
     withDockerContainer('python:3.12.1-alpine3.19') {
         stage('Manual Approval')  {         
             checkout scm         
-            // Menunggu input persetujuan dari pengguna         
+            // wait for manual approve        
             input message: 'Lanjutkan ke tahap Deploy?', ok: 'Lanjutkan'     
         }
     }
