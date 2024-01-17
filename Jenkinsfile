@@ -22,7 +22,7 @@ node() {
             input message: 'Lanjutkan ke tahap Deploy?', ok: 'gasss'     
         }
     }
-    // deploy block
+    // deliver block
     stage('Deliver') {
         withEnv([
             'VOLUME=$(pwd)/sources:/src',
