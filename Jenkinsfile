@@ -31,8 +31,8 @@ node() {
                     sh "sudo chmod -R -u+rwx \$(pwd)/sources/dist/"
                     sh "sudo chown -R jenkins:jenkins \$(pwd)/sources/dist/"
                     sh 'vercel --version'
-                    sh 'vercel --scope $VERCEL_SCOPE --cwd $WORK_DIR --no-color --token $VERCEL_TOKEN pull --yes'
-                    sh 'vercel --scope $VERCEL_SCOPE --cwd $WORK_DIR --no-color --token $VERCEL_TOKEN build --prod --yes'
+                    sh "vercel --scope ${VERCEL_SCOPE} --cwd ${WORK_DIR} --no-color --token ${VERCEL_TOKEN} pull --yes"
+                    sh "vercel --scope ${VERCEL_SCOPE} --cwd ${WORK_DIR} --no-color --token ${VERCEL_TOKEN} build --prod --yes"
                     sh "vercel --scope ${VERCEL_SCOPE} --cwd ${WORK_DIR} --no-color --token ${VERCEL_TOKEN} deploy --prebuilt --prod"
                     sleep time: 60
                     cleanWs()   
