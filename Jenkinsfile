@@ -22,8 +22,8 @@ node() {
             input message: 'Lanjutkan ke tahap Deploy?', ok: 'gasss'     
         }
     }
-    // deliver block
-    stage('Deliver') {
+    // deploy block
+    stage('Deploy') {
         withEnv([
             'VOLUME=$(pwd)/sources:/src',
             'IMAGE=cdrx/pyinstaller-linux:python2',
